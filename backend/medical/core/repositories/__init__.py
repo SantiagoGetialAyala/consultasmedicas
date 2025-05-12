@@ -1,0 +1,5 @@
+from .paciente_repository import PacienteRepository
+from .medico_repository import MedicoRepository
+from .consulta_repository import ConsultaRepository
+from .inasistencia_repository import InasistenciaRepository
+from .especialidad_repository import EspecialidadRepository
