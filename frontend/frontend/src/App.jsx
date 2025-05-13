@@ -15,7 +15,6 @@ function App() {
           <Route path="/pacientes" element={<Pacientes />} />
           <Route path="/medicos" element={<Medicos />} />
           <Route path="/consultas" element={<Consultas />} />
-          <Route path="/inasistencias" element={<Inasistencias />} />
           <Route path="/especialidades" element={<Especialidades />} />
         </Routes>
       </div>

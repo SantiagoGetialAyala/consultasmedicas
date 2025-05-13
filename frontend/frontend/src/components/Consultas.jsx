@@ -14,6 +14,13 @@ export default function Consultas() {
     diagnostico: ''
   });
 
+  const [errores, setErrores] = useState({});
+
+  const ESTADO_CHOICES = [
+    { value: 'pendiente', label: 'Pendiente' },
+    { value: 'realizada', label: 'Realizada' }
+  ];
+
   useEffect(() => {
     API.get('consultas/')
       .then(res => setConsultas(res.data))
@@ -33,8 +40,27 @@ export default function Consultas() {
     setNuevaConsulta({ ...nuevaConsulta, [name]: value });
   };
 
+  const validarCampos = () => {
+    const nuevosErrores = {};
+    if (!nuevaConsulta.paciente) nuevosErrores.paciente = "Debe seleccionar un paciente.";
+    if (!nuevaConsulta.medico) nuevosErrores.medico = "Debe seleccionar un médico.";
+    if (!nuevaConsulta.fecha) nuevosErrores.fecha = "Debe ingresar la fecha de la consulta.";
+    if (!nuevaConsulta.estado) nuevosErrores.estado = "Debe seleccionar un estado.";
+    if (!nuevaConsulta.diagnostico.trim()) nuevosErrores.diagnostico = "Debe ingresar un diagnóstico.";
+
+    return nuevosErrores;
+  };
+
   const handleSubmit = (e) => {
     e.preventDefault();
+    const erroresValidados = validarCampos();
+    if (Object.keys(erroresValidados).length > 0) {
+      setErrores(erroresValidados);
+      return;
+    }
+
+    setErrores({});
+
     API.post('consultas/', nuevaConsulta)
       .then(res => {
         setConsultas([...consultas, res.data]);
@@ -57,59 +83,80 @@ export default function Consultas() {
       <form onSubmit={handleSubmit} className="bg-white p-6 rounded-lg shadow-md mb-8 space-y-4">
         <h2 className="text-2xl font-semibold mb-4">Agregar Consulta</h2>
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-          <select
-            name="paciente"
-            value={nuevaConsulta.paciente}
-            onChange={handleInputChange}
-            required
-            className="p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Seleccionar Paciente</option>
-            {pacientes.map(p => (
-              <option key={p.id} value={p.id}>{p.nombre}</option>
-            ))}
-          </select>
+          <div>
+            <select
+              name="paciente"
+              value={nuevaConsulta.paciente}
+              onChange={handleInputChange}
+              className="p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 w-full"
+              required
+            >
+              <option value="">Seleccionar Paciente</option>
+              {pacientes.map(p => (
+                <option key={p.id} value={p.id}>{p.nombre}</option>
+              ))}
+            </select>
+            {errores.paciente && <p className="text-red-500 text-sm">{errores.paciente}</p>}
+          </div>
 
-          <select
-            name="medico"
-            value={nuevaConsulta.medico}
-            onChange={handleInputChange}
-            required
-            className="p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-          >
-            <option value="">Seleccionar Médico</option>
-            {medicos.map(m => (
-              <option key={m.id} value={m.id}>{m.nombre}</option>
-            ))}
-          </select>
+          <div>
+            <select
+              name="medico"
+              value={nuevaConsulta.medico}
+              onChange={handleInputChange}
+              className="p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 w-full"
+              required
+            >
+              <option value="">Seleccionar Médico</option>
+              {medicos.map(m => (
+                <option key={m.id} value={m.id}>{m.nombre}</option>
+              ))}
+            </select>
+            {errores.medico && <p className="text-red-500 text-sm">{errores.medico}</p>}
+          </div>
 
-          <input
-            type="datetime-local"
-            name="fecha"
-            value={nuevaConsulta.fecha}
-            onChange={handleInputChange}
-            required
-            className="p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-          />
+          <div>
+            <input
+              type="datetime-local"
+              name="fecha"
+              value={nuevaConsulta.fecha}
+              onChange={handleInputChange}
+              className="p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 w-full"
+              required
+            />
+            {errores.fecha && <p className="text-red-500 text-sm">{errores.fecha}</p>}
+          </div>
 
-          <input
-            type="text"
-            name="estado"
-            placeholder="Estado"
-            value={nuevaConsulta.estado}
-            onChange={handleInputChange}
-            className="p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-          />
+          <div>
+            <select
+              name="estado"
+              value={nuevaConsulta.estado}
+              onChange={handleInputChange}
+              className="p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 w-full"
+              required
+            >
+              <option value="">Seleccionar Estado</option>
+              {ESTADO_CHOICES.map(opcion => (
+                <option key={opcion.value} value={opcion.value}>{opcion.label}</option>
+              ))}
+            </select>
+            {errores.estado && <p className="text-red-500 text-sm">{errores.estado}</p>}
+          </div>
 
-          <input
-            type="text"
-            name="diagnostico"
-            placeholder="Diagnóstico"
-            value={nuevaConsulta.diagnostico}
-            onChange={handleInputChange}
-            className="p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500"
-          />
+          <div className="sm:col-span-2">
+            <input
+              type="text"
+              name="diagnostico"
+              placeholder="Diagnóstico"
+              value={nuevaConsulta.diagnostico}
+              onChange={handleInputChange}
+              className="p-3 border border-gray-300 rounded-md focus:ring-2 focus:ring-blue-500 w-full"
+              required
+            />
+            {errores.diagnostico && <p className="text-red-500 text-sm">{errores.diagnostico}</p>}
+          </div>
         </div>
+
         <button
           type="submit"
           className="w-full bg-blue-600 text-white p-3 rounded-md font-semibold hover:bg-blue-700 transition"

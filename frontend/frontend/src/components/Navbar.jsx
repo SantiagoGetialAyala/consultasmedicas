@@ -7,7 +7,6 @@ export default function Navbar() {
         <li><Link to="/pacientes">Pacientes</Link></li>
         <li><Link to="/medicos">Médicos</Link></li>
         <li><Link to="/consultas">Consultas</Link></li>
-        <li><Link to="/inasistencias">Inasistencias</Link></li>
         <li><Link to="/especialidades">Especialidades</Link></li>
       </ul>
     </nav>
