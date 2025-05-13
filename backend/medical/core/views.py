@@ -2,6 +2,7 @@ from rest_framework import viewsets, status
 from rest_framework.response import Response
 from rest_framework.exceptions import NotFound, ValidationError
 from rest_framework.decorators import action
+from rest_framework.views import exception_handler
 
 from .repositories import (
     PacienteRepository, MedicoRepository, ConsultaRepository,
@@ -198,7 +199,8 @@ class EspecialidadViewSet(BaseViewSet):
         return Response(serializer.data)
 
     def destroy(self, request, pk=None):
-        deleted = especialidad_repo.delete(pk)
-        if not deleted:
-            raise NotFound("Especialidad no encontrada para eliminar.")
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        try:
+            deleted = especialidad_repo.delete(pk)
+            return Response(status=status.HTTP_204_NO_CONTENT)
+        except ObjectDoesNotExist:
+            raise NotFound(f"Especialidad con ID {pk} no encontrada para eliminar.")

@@ -8,7 +8,13 @@ export default function Navbar() {
         <li><Link to="/medicos">Médicos</Link></li>
         <li><Link to="/consultas">Consultas</Link></li>
         <li><Link to="/especialidades">Especialidades</Link></li>
+        <li><Link to="/dashboard">filtro</Link></li>
+
       </ul>
     </nav>
   );
+
+
+
+  
 }

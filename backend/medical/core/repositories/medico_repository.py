@@ -43,6 +43,11 @@ class MedicoRepository:
         medico.save()
         return medico
 
-    def delete(self, medico):
-        """Elimina un médico"""
-        medico.delete()
+    def delete(self, pk):
+        """Elimina un médico por su ID"""
+        try:
+            medico = Medico.objects.get(pk=pk)
+            medico.delete()
+            return True
+        except Medico.DoesNotExist:
+            return False
